@@ -63,6 +63,8 @@ type Notification struct {
 	Action  string
 	Sender string //sender username
 	Recipient int // recipient id
+
+	Timestamp string
 }
 
 // users
@@ -74,7 +76,7 @@ func createUsersTable(db *sql.DB) {
         "Username" TEXT UNIQUE,
         "Email" TEXT UNIQUE,
         "Password" TEXT,
-        timestamp TEXT DEFAULT CURRENT_TIMESTAMP);`
+        timestamp TEXT DEFAULT(strftime('%Y.%m.%d %H:%M', 'now')));`
 	query, err := db.Prepare(users_table)
 	if err != nil {
 		log.Fatal(err)
@@ -507,7 +509,8 @@ func createNotificationsTable(db *sql.DB) {
 		"Object_id" INTEGER,
         "Action" TEXT,
         "Sender" TEXT,
-		"Recipient" INTEGER);` 
+		"Recipient" INTEGER,
+		timestamp TEXT DEFAULT(strftime('%Y.%m.%d %H:%M', 'now')));` 
 
 	query, err := db.Prepare(n_table)
 	if err != nil {
@@ -540,7 +543,7 @@ func fetchNotificationsByUserId(db *sql.DB, user_id int) []Notification {
 	var all []Notification
 	for record.Next() {
 		var n Notification
-		err = record.Scan(&n.Id, &n.Object, &n.Title, &n.ObjectId, &n.Action, &n.Sender, &n.Recipient)
+		err = record.Scan(&n.Id, &n.Object, &n.Title, &n.ObjectId, &n.Action, &n.Sender, &n.Recipient, &n.Timestamp)
 		if err != nil {
 			log.Println(err)
 		}

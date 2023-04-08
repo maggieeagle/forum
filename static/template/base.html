@@ -171,10 +171,9 @@
                             <div class="modal-body">
                                 <div style="color: rgb(0,0,0);">
                                     {{if eq .Object "post"}}
-                                    <p>{{.Sender}} {{.Action}} your {{.Object}} <a href="/post/id?id={{.ObjectId}}">{{.Title}}</a></p>
+                                    <p style="display:flex; justify-content:space-between; align-items: center;"><span>{{.Sender}} {{.Action}} your {{.Object}} <a href="/post/id?id={{.ObjectId}}">{{.Title}}</a></span><span style="font-size:12px;" class="text-secondary">{{.Timestamp}}</span></span></p>
                                     {{end}}
                                     {{if eq .Object "comment"}}
-                                    <p>{{.Sender}} {{.Action}} your {{.Object}} on post <a href="/post/id?id={{.ObjectId}}">{{.Title}}</a></p>
                                     {{end}}
                                 </div>
                             </div>
