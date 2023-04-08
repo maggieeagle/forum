@@ -166,12 +166,26 @@
                             <h4 class="modal-title" style="color: rgb(255,255,255);">Notifications</h4><button
                                 type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="modal-body">
-                            <div style="color: rgb(0,0,0);">
-                                <p>Looks like you are trying to jump the gun, cowboy 🤠</p>
-                                <p> This feature is yet to come </p>
+                        {{if .Notifications}}
+                            {{range .Notifications}}
+                            <div class="modal-body">
+                                <div style="color: rgb(0,0,0);">
+                                    {{if eq .Object "post"}}
+                                    <p>{{.Sender}} {{.Action}} your {{.Object}} <a href="/post/id?id={{.ObjectId}}">{{.Title}}</a></p>
+                                    {{end}}
+                                    {{if eq .Object "comment"}}
+                                    <p>{{.Sender}} {{.Action}} your {{.Object}} on post <a href="/post/id?id={{.ObjectId}}">{{.Title}}</a></p>
+                                    {{end}}
+                                </div>
                             </div>
-                        </div>
+                            {{end}}
+                        {{else}}
+                            <div class="modal-body">
+                                <div style="color: rgb(0,0,0);">
+                                    <p>No notifications for you, cowboy 🤠. Post more, get more!</p>
+                                </div>
+                            </div>
+                        {{end}}
                         <div class="modal-footer"><button class="btn btn-dark" type="button" data-bs-dismiss="modal"
                                 style="border-style: solid;border-radius: 10px;">Close</button></div>
                     </div>

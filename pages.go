@@ -25,6 +25,8 @@ type Data struct {
 	ScrollTo string
 	// saves current filter
 	Filter string
+
+	Notifications []Notification
 }
 
 type ErrorMsg struct {

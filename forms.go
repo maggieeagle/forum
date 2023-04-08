@@ -29,6 +29,8 @@ func likePost(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/?modal=true", http.StatusSeeOther)
 	} else {
 		if post_id > 0 && post_id <= len(posts) {
+			// fmt.Println("adding notification, recepient", fetchPostByID(database, post_id).UserId)
+			addNotification(database, "post", fetchPostByID(database, post_id).Title, post_id, "liked", user.Username, fetchPostByID(database, post_id).UserId)
 			fetch := fetchReactionByUserAndId(database, reactionsPosts, user.Id, post_id)
 			if fetch.Value != 1 { // if not like
 				if fetch.Value == -1 {
@@ -71,6 +73,7 @@ func dislikePost(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/?modal=true", http.StatusSeeOther)
 	} else {
 		if post_id > 0 && post_id <= len(posts) {
+			addNotification(database, "post", fetchPostByID(database, post_id).Title, post_id, "disliked", user.Username, fetchPostByID(database, post_id).UserId)
 			fetch := fetchReactionByUserAndId(database, reactionsPosts, user.Id, post_id)
 			if fetch.Value != -1 { // if not dislike
 				if fetch.Value == 1 {

@@ -54,6 +54,17 @@ type Reaction struct {
 	UnitId int
 }
 
+type Notification struct {
+	Id int
+	Object     string
+	Title string
+	ObjectId int // object id (to link)
+
+	Action  string
+	Sender string //sender username
+	Recipient int // recipient id
+}
+
 // users
 // -------------------------------------------------------------------------------------
 
@@ -481,4 +492,59 @@ func deleteRow(db *sql.DB, table string, id int) error {
 		return err
 	}
 	return nil
+}
+
+
+//	notification table
+//
+// -------------------------------------------------------------------------------------
+
+func createNotificationsTable(db *sql.DB) {
+	n_table := `CREATE TABLE notifications (
+        id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+        "Object" TEXT,
+		"Title" TEXT,
+		"Object_id" INTEGER,
+        "Action" TEXT,
+        "Sender" TEXT,
+		"Recipient" INTEGER);` 
+
+	query, err := db.Prepare(n_table)
+	if err != nil {
+		log.Fatal(err)
+	}
+	query.Exec()
+	fmt.Println("Table for notifications created successfully!")
+}
+
+func addNotification(db *sql.DB, Object, Title string, ObjectId int, Action string, Sender string, Recipient int) {
+	records := `INSERT INTO notifications(Object, Title, Object_id, Action, Sender, Recipient) VALUES (?, ?, ?, ?, ?, ?)`
+	query, err := db.Prepare(records)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = query.Exec(Object, Title, ObjectId, Action, Sender, Recipient)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func fetchNotificationsByUserId(db *sql.DB, user_id int) []Notification {
+	record, err := db.Query("SELECT * FROM notifications WHERE Recipient=?", user_id)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer record.Close()
+
+	var all []Notification
+	for record.Next() {
+		var n Notification
+		err = record.Scan(&n.Id, &n.Object, &n.Title, &n.ObjectId, &n.Action, &n.Sender, &n.Recipient)
+		if err != nil {
+			log.Println(err)
+		}
+		all = append(all, n)
+	}
+	return all
 }

@@ -8,6 +8,7 @@ import (
 
 	"github.com/gofrs/uuid"
 	"golang.org/x/crypto/bcrypt"
+	"reflect"
 )
 
 func setSessionToken(w http.ResponseWriter, creds Credentials) {
@@ -92,6 +93,8 @@ func welcome(w http.ResponseWriter, r *http.Request) Data {
 	// If the session is valid, return the welcome message to the user
 	output.LoggedIn = true
 	output.User = userSession.user
+	output.Notifications = fetchNotificationsByUserId(database, output.User.Id)
+	reverse(output.Notifications)
 	fmt.Printf("\nWelcome %s!\n", userSession.user.Username)
 	// // maybe think how to make session token change less frequently
 	refresh(w, r)
@@ -174,9 +177,11 @@ func fillPosts(data *Data, posts []Post) []Post {
 	return posts
 }
 
-func reverse(posts []Post) {
-	for i, j := 0, len(posts)-1; i < j; i, j = i+1, j-1 {
-		posts[i], posts[j] = posts[j], posts[i]
+func reverse(s interface{}) {
+	n := reflect.ValueOf(s).Len()
+    swap := reflect.Swapper(s)
+	for i, j := 0,  n-1; i < j; i, j = i+1, j-1 {
+		swap(i, j)
 	}
 }
 
