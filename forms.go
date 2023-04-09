@@ -31,8 +31,8 @@ func likePost(w http.ResponseWriter, r *http.Request) {
 		if post_id > 0 && post_id <= len(posts) {
 			// fmt.Println("adding notification, recepient", fetchPostByID(database, post_id).UserId)
 			fetch := fetchReactionByUserAndId(database, reactionsPosts, user.Id, post_id)
+			action := "liked"
 			if fetch.Value != 1 { // if not like
-				action := "liked"
 				if fetch.Value == -1 {
 					// delete dislike in frontend and backend
 					deleteRow(database, reactionsPosts, fetch.Id)
@@ -42,13 +42,14 @@ func likePost(w http.ResponseWriter, r *http.Request) {
 				// add like in frontend and backend
 				updateTableLikes(database, postsTable, allLikes+1, post_id)
 				addPostsReactions(database, 1, user.Id, post_id)
-				addNotification(database, "post", fetchPostByID(database, post_id).Title, post_id, action, user.Username, fetchPostByID(database, post_id).UserId)
 			} else {
 				// delete like in frontend and backend
 				updateTableLikes(database, postsTable, allLikes-1, post_id)
 				deleteRow(database, reactionsPosts, fetch.Id)
-				addNotification(database, "post", fetchPostByID(database, post_id).Title, post_id, "removed like from", user.Username, fetchPostByID(database, post_id).UserId)
+				action = "removed like from"
 			}
+			addNotification(database, "post", fetchPostByID(database, post_id).Title, post_id, action, user.Username, fetchPostByID(database, post_id).UserId)
+
 		}
 		c, err := r.Cookie("last_page")
 		if err != nil {
@@ -77,8 +78,8 @@ func dislikePost(w http.ResponseWriter, r *http.Request) {
 	} else {
 		if post_id > 0 && post_id <= len(posts) {
 			fetch := fetchReactionByUserAndId(database, reactionsPosts, user.Id, post_id)
+			action := "disliked"
 			if fetch.Value != -1 { // if not dislike
-				action := "disliked"
 				if fetch.Value == 1 {
 					// delete like in frontend and backend
 					deleteRow(database, reactionsPosts, fetch.Id)
@@ -89,15 +90,13 @@ func dislikePost(w http.ResponseWriter, r *http.Request) {
 				// add dislike in frontend and backend
 				updateTableDislikes(database, postsTable, allDislikes+1, post_id)
 				addPostsReactions(database, -1, user.Id, post_id)
-				addNotification(database, "post", fetchPostByID(database, post_id).Title, post_id, action, user.Username, fetchPostByID(database, post_id).UserId)
-
 			} else {
 				// delete dislike in frontend and backend
 				updateTableDislikes(database, postsTable, allDislikes-1, post_id)
 				deleteRow(database, reactionsPosts, fetch.Id)
-				addNotification(database, "post", fetchPostByID(database, post_id).Title, post_id, "removed dislike from", user.Username, fetchPostByID(database, post_id).UserId)
-
+				action = "removed dislike from"
 			}
+			addNotification(database, "post", fetchPostByID(database, post_id).Title, post_id, action, user.Username, fetchPostByID(database, post_id).UserId)
 		}
 		c, err := r.Cookie("last_page")
 		if err != nil {
@@ -125,8 +124,8 @@ func likeComment(w http.ResponseWriter, r *http.Request) {
 	} else {
 		// if comment_id > 0 && comment_id <= len(comments) {
 		fetch := fetchReactionByUserAndId(database, reactionsComments, user.Id, comment_id)
+		action := "liked"
 		if fetch.Value != 1 { // if not like
-			action := "liked"
 			if fetch.Value == -1 {
 				// delete dislike in frontend and backend
 				deleteRow(database, reactionsComments, fetch.Id)
@@ -137,16 +136,15 @@ func likeComment(w http.ResponseWriter, r *http.Request) {
 			// add like in frontend and backend
 			updateTableLikes(database, commentsTable, allLikes+1, comment_id)
 			addCommentsReactions(database, 1, user.Id, comment_id)
-			post := fetchPostByID(database, fetchCommentByID(database, comment_id).PostId)
-			addNotification(database, "comment", post.Title, post.Id, action, user.Username, fetchCommentByID(database, comment_id).UserId)
-
 		} else {
 			// delete like in frontend and backend
 			updateTableLikes(database, commentsTable, allLikes-1, comment_id)
 			deleteRow(database, reactionsComments, fetch.Id)
-			post := fetchPostByID(database, fetchCommentByID(database, comment_id).PostId)
-			addNotification(database, "comment", post.Title, post.Id, "removed like from", user.Username, fetchCommentByID(database, comment_id).UserId)
+			action = "removed like from"
 		}
+		post := fetchPostByID(database, fetchCommentByID(database, comment_id).PostId)
+		addNotification(database, "comment", post.Title, post.Id, action, user.Username, fetchCommentByID(database, comment_id).UserId)
+
 		c, err := r.Cookie("last_page")
 		if err != nil {
 			http.Redirect(w, r, "/", http.StatusSeeOther)
@@ -174,8 +172,8 @@ func dislikeComment(w http.ResponseWriter, r *http.Request) {
 	} else {
 		// if comment_id > 0 && comment_id <= len(comments) {
 		fetch := fetchReactionByUserAndId(database, reactionsComments, user.Id, comment_id)
+		action := "disliked"
 		if fetch.Value != -1 { // if not dislike
-			action := "disliked"
 			if fetch.Value == 1 {
 				// delete like in frontend and backend
 				deleteRow(database, reactionsComments, fetch.Id)
@@ -186,16 +184,15 @@ func dislikeComment(w http.ResponseWriter, r *http.Request) {
 			// add dislike in frontend and backend
 			updateTableDislikes(database, commentsTable, allDislikes+1, comment_id)
 			addCommentsReactions(database, -1, user.Id, comment_id)
-			post := fetchPostByID(database, fetchCommentByID(database, comment_id).PostId)
-			addNotification(database, "comment", post.Title, post.Id, action, user.Username, fetchCommentByID(database, comment_id).UserId)
 		} else {
 			// delete dislike in frontend and backend
 			updateTableDislikes(database, commentsTable, allDislikes-1, comment_id)
 			deleteRow(database, reactionsComments, fetch.Id)
-			post := fetchPostByID(database, fetchCommentByID(database, comment_id).PostId)
-			addNotification(database, "comment", post.Title, post.Id, "removed dislike from", user.Username, fetchCommentByID(database, comment_id).UserId)
-
+			action = "removed dislike from"
 		}
+		post := fetchPostByID(database, fetchCommentByID(database, comment_id).PostId)
+		addNotification(database, "comment", post.Title, post.Id, action, user.Username, fetchCommentByID(database, comment_id).UserId)
+
 		c, err := r.Cookie("last_page")
 		if err != nil {
 			http.Redirect(w, r, "/", http.StatusSeeOther)
