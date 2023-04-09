@@ -25,13 +25,21 @@
                         style="width: 42px;box-shadow: 0px 0px;"><span></span><span>&nbsp;FORUM</span></a>
                 <div class="collapse navbar-collapse d-flex justify-content-start align-items-center m-auto"
                     id="navcol-2" style="margin-top: 10px;margin-bottom: 10px;">
-                    <ul class="navbar-nav ms-auto"></ul><button class="btn btn-dark d-lg-flex align-items-lg-center"
-                        type="button"
+                    <ul class="navbar-nav ms-auto"></ul>
+                    <!-- Start: Notification Button-->
+                    <button class="btn btn-dark d-lg-flex align-items-lg-center" type="button"
                         style="border-radius: 20px;box-shadow: 2px 2px 4px 2px rgb(0,0,0);margin-right: 10px;font-size: 12px;"
                         data-bs-target="#modal-1" data-bs-toggle="modal"><img
-                            src="/static/template/assets/img/icons/notification.png"><span>New
-                            Notification</span></button><a class="btn btn-dark d-lg-flex align-items-lg-center"
-                        role="button"
+                            src="/static/template/assets/img/icons/notification.png"
+                            style="filter: contrast(40%);">&nbsp;&nbsp;<span>&nbsp;Notifications</span></button>
+                    <button class="btn btn-dark d-lg-flex align-items-lg-center" type="button"
+                        style="border-radius: 20px;box-shadow: 2px 2px 4px 2px rgb(0,0,0);margin-right: 10px;font-size: 12px;"
+                        data-bs-target="#modal-1" data-bs-toggle="modal"><img
+                            src="/static/template/assets/img/icons/notification.png">&nbsp;&nbsp;<span>&nbsp;Notifications</span><span
+                            class="fw-bold text-bg-danger border rounded-0"
+                            style="margin-right: 5px;margin-left: 5px;">{7}</span></button>
+                    <!-- End: Notification Button-->
+                    <a class="btn btn-dark d-lg-flex align-items-lg-center" role="button"
                         style="border-radius: 20px;box-shadow: 2px 2px 4px 2px rgb(0,0,0);margin-right: 10px;font-size: 12px;"
                         href="/dashBoard"><img src="/static/template/assets/img/icons/user.png"><span>{{template
                             "username" .}}</span></a><a class="btn btn-dark d-lg-flex align-items-lg-center ms-md-2"
@@ -167,24 +175,32 @@
                                 type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         {{if .Notifications}}
-                            {{range .Notifications}}
-                            <div class="modal-body">
-                                <div style="color: rgb(0,0,0);">
-                                    {{if eq .Object "post"}}
-                                    <p style="display:flex; justify-content:space-between; align-items: center;"><span>{{.Sender}} {{.Action}} your {{.Object}} <a href="/post/id?id={{.ObjectId}}">{{.Title}}</a></span><span style="font-size:12px;" class="text-secondary">{{.Timestamp}}</span></span></p>
-                                    {{end}}
-                                    {{if eq .Object "comment"}}
-                                    <p style="display:flex; justify-content:space-between; align-items: center;"><span>{{.Sender}} {{.Action}} your {{.Object}} to post <a href="/post/id?id={{.ObjectId}}">{{.Title}}</a></span><span style="font-size:12px;" class="text-secondary">{{.Timestamp}}</span></span></p>
-                                    {{end}}
-                                </div>
+                        {{range .Notifications}}
+                        <div class="modal-body">
+                            <div style="color: rgb(0,0,0);">
+                                {{if eq .Object "post"}}
+                                <p style="display:flex; justify-content:space-between; align-items: center;">
+                                    <span>{{.Sender}} {{.Action}} your {{.Object}} <a
+                                            href="/post/id?id={{.ObjectId}}">{{.Title}}</a></span><span
+                                        style="font-size:12px;" class="text-secondary">{{.Timestamp}}</span></span>
+                                </p>
+                                {{end}}
+                                {{if eq .Object "comment"}}
+                                <p style="display:flex; justify-content:space-between; align-items: center;">
+                                    <span>{{.Sender}} {{.Action}} your {{.Object}} to post <a
+                                            href="/post/id?id={{.ObjectId}}">{{.Title}}</a></span><span
+                                        style="font-size:12px;" class="text-secondary">{{.Timestamp}}</span></span>
+                                </p>
+                                {{end}}
                             </div>
-                            {{end}}
+                        </div>
+                        {{end}}
                         {{else}}
-                            <div class="modal-body">
-                                <div style="color: rgb(0,0,0);">
-                                    <p>No notifications for you, cowboy 🤠. Post more, get more!</p>
-                                </div>
+                        <div class="modal-body">
+                            <div style="color: rgb(0,0,0);">
+                                <p>No notifications for you, cowboy 🤠. Post more, get more!</p>
                             </div>
+                        </div>
                         {{end}}
                         <div class="modal-footer"><button class="btn btn-dark" type="button" data-bs-dismiss="modal"
                                 style="border-style: solid;border-radius: 10px;">Close</button></div>
