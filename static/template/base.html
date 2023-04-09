@@ -29,25 +29,30 @@
                     <!-- Start: Notification Button-->
                     {{if .Notifications}}
                     <button class="btn btn-dark d-lg-flex align-items-lg-center" type="button"
-                    style="border-radius: 20px;box-shadow: 2px 2px 4px 2px rgb(0,0,0);margin-right: 10px;font-size: 12px;"
-                    data-bs-target="#modal-1" data-bs-toggle="modal"><img
-                        src="/static/template/assets/img/icons/notification.png">&nbsp;&nbsp;<span>&nbsp;Notifications</span><span
-                        class="fw-bold text-bg-danger rounded"
-                        style="margin-right: 0px;margin-left: 8px; padding: 0 5px;min-width: 20px; background: #f54b55;">{{len .Notifications}}</span></button>
+                        style="border-radius: 20px;box-shadow: 2px 2px 4px 2px rgb(0,0,0);margin-right: 10px;font-size: 12px;"
+                        data-bs-target="#modal-1" data-bs-toggle="modal"><img
+                            src="/static/template/assets/img/icons/notification.png"
+                            style="margin-right: 5px;"><span>Notifications</span><span
+                            class="fw-bold text-bg-danger rounded"
+                            style="margin-right: 0px;margin-left: 8px; padding: 0 5px;min-width: 20px; background: #f54b55;">{{len
+                            .Notifications}}</span></button>
                     {{else}}
                     <button class="btn btn-dark d-lg-flex align-items-lg-center" type="button"
                         style="border-radius: 20px;box-shadow: 2px 2px 4px 2px rgb(0,0,0);margin-right: 10px;font-size: 12px;"
                         data-bs-target="#modal-1" data-bs-toggle="modal"><img
-                            src="/static/template/assets/img/icons/notification2.png">&nbsp;&nbsp;<span>&nbsp;Notifications</span></button>
+                            src="/static/template/assets/img/icons/notification2.png"
+                            style="margin-right: 5px;"><span>Notifications</span></button>
                     {{end}}
                     <!-- End: Notification Button-->
                     <a class="btn btn-dark d-lg-flex align-items-lg-center" role="button"
                         style="border-radius: 20px;box-shadow: 2px 2px 4px 2px rgb(0,0,0);margin-right: 10px;font-size: 12px;"
-                        href="/dashBoard"><img src="/static/template/assets/img/icons/user.png"><span>{{template
+                        href="/dashBoard"><img src="/static/template/assets/img/icons/user.png"
+                            style="margin-right: 5px;"><span>{{template
                             "username" .}}</span></a><a class="btn btn-dark d-lg-flex align-items-lg-center ms-md-2"
                         role="button" href="/logout"
                         style="border-radius: 20px;box-shadow: 2px 2px 4px 2px rgb(0,0,0);font-size: 12px;"><img
-                            src="/static/template/assets/img/icons/login.png"><span>Log out</span></a>
+                            src="/static/template/assets/img/icons/login.png" style="margin-right: 5px;"><span>Log
+                            out</span></a>
                 </div>
             </div>
         </nav><!-- End: NavBarUser -->
@@ -64,10 +69,12 @@
                         type="button"
                         style="border-radius: 20px;box-shadow: 2px 2px 4px 2px rgb(0,0,0);margin-right: 10px;font-size: 12px;"
                         data-bs-target="#signup" data-bs-toggle="modal"><img
-                            src="/static/template/assets/img/icons/user.png"><span>Register</span></button><a
+                            src="/static/template/assets/img/icons/user.png"
+                            style="margin-right: 5px;"><span>Register</span></button><a
                         class="btn btn-dark d-lg-flex align-items-lg-center ms-md-2" role="button" href="#"
                         style="border-radius: 20px;box-shadow: 2px 2px 4px 2px rgb(0,0,0);font-size: 12px;"
-                        data-bs-target="#signin" data-bs-toggle="modal"><img style="transform:rotate(180deg);"
+                        data-bs-target="#signin" data-bs-toggle="modal"><img
+                            style="transform:rotate(180deg);margin-right:5px;"
                             src="/static/template/assets/img/icons/login.png"><span>Log In</span></a>
                 </div>
             </div>
@@ -175,26 +182,28 @@
                         <div class="modal-header" style="background: #000000;">
                             <h4 class="modal-title" style="color: rgb(255,255,255);">Notifications</h4>
                             {{if .Notifications}}
-                            <form action="/disableNotifications" method="post"><button href="/disableNotifications" style="background:black"
-                                type="submit" class="btn btn-link link-light" data-bs-dismiss="modal" aria-label="Mark all as read">Mark all as read</button>
+                            <form action="/disableNotifications" method="post"><button href="/disableNotifications"
+                                    style="background:black" type="submit" class="btn btn-link link-light"
+                                    data-bs-dismiss="modal" aria-label="Mark all as read">Mark all as read</button>
                             </form>
                             {{end}}
                         </div>
                         {{if .Notifications}}
-                            {{range .Notifications}}
-                            <div class="modal-body container-fluid">
-                                <div style="color: rgb(0,0,0);" class="row">
-                                    <div class="col-1">
-                                    <img src="/static/template/assets/img/icons/user.png"
-                                        style="margin-right: 3px;">
-                                    </div>
-                                    <div style="align-items: center;" class="col-11">
-                                    <span>{{.Sender}} {{.Action}} your {{.Object}} {{if eq .Object "comment"}} to post {{end}} <a href="/post/id?id={{.ObjectId}}">{{.Title}}</a></span>
-                                    <p class="mb-0"><span style="font-size:12px;" class="text-secondary">{{.Timestamp}}</span></p>
-                                    </div>
+                        {{range .Notifications}}
+                        <div class="modal-body container-fluid">
+                            <div style="color: rgb(0,0,0);" class="row">
+                                <div class="col-1">
+                                    <img src="/static/template/assets/img/icons/user.png" style="margin-right: 3px;">
+                                </div>
+                                <div style="align-items: center;" class="col-11">
+                                    <span>{{.Sender}} {{.Action}} your {{.Object}} {{if eq .Object "comment"}} to post
+                                        {{end}} <a href="/post/id?id={{.ObjectId}}">{{.Title}}</a></span>
+                                    <p class="mb-0"><span style="font-size:12px;"
+                                            class="text-secondary">{{.Timestamp}}</span></p>
                                 </div>
                             </div>
-                            {{end}}
+                        </div>
+                        {{end}}
                         {{else}}
                         <div class="modal-body">
                             <div style="color: rgb(0,0,0);">
