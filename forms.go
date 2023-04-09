@@ -301,3 +301,15 @@ func createComment(w http.ResponseWriter, r *http.Request) {
 	// http.Redirect(w, r, c.Value, http.StatusSeeOther)
 	http.Redirect(w, r, "/post/id?id="+r.FormValue("id"), http.StatusSeeOther)
 }
+
+func disableNotifications(w http.ResponseWriter, r *http.Request) {
+	data := welcome(w, r)
+
+	if data.User.Id == 0 { // if not login
+		http.Redirect(w, r, "/?modal=true", http.StatusSeeOther)
+		return
+	}
+
+	disable(fetchActiveNotificationsByUserId(database, data.User.Id))
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+}

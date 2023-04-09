@@ -171,27 +171,26 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header" style="background: #000000;">
-                            <h4 class="modal-title" style="color: rgb(255,255,255);">Notifications</h4><button
-                                type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <h4 class="modal-title" style="color: rgb(255,255,255);">Notifications</h4>
+                            {{if .Notifications}}
+                            <form action="/disableNotifications" method="post"><button style="background:black"
+                                type="submit" class="btn btn-link link-light" data-bs-dismiss="modal" aria-label="Mark all as read">Mark all as read</button>
+                            </form>
+                            {{end}}
                         </div>
                         {{if .Notifications}}
-                        {{range .Notifications}}
-                        <div class="modal-body">
-                            <div style="color: rgb(0,0,0);">
-                                {{if eq .Object "post"}}
-                                <p style="display:flex; justify-content:space-between; align-items: center;">
-                                    <span>{{.Sender}} {{.Action}} your {{.Object}} <a
-                                            href="/post/id?id={{.ObjectId}}">{{.Title}}</a></span><span
-                                        style="font-size:12px;" class="text-secondary">{{.Timestamp}}</span></span>
-                                </p>
-                                {{end}}
-                                {{if eq .Object "comment"}}
-                                <p style="display:flex; justify-content:space-between; align-items: center;">
-                                    <span>{{.Sender}} {{.Action}} your {{.Object}} to post <a
-                                            href="/post/id?id={{.ObjectId}}">{{.Title}}</a></span><span
-                                        style="font-size:12px;" class="text-secondary">{{.Timestamp}}</span></span>
-                                </p>
-                                {{end}}
+                            {{range .Notifications}}
+                            <div class="modal-body container-fluid">
+                                <div style="color: rgb(0,0,0);" class="row">
+                                    <div class="col-1">
+                                    <img src="/static/template/assets/img/icons/user.png"
+                                        style="margin-right: 3px;">
+                                    </div>
+                                    <div style="align-items: center;" class="col-11">
+                                    <span>{{.Sender}} {{.Action}} your {{.Object}} {{if eq .Object "comment"}} to post {{end}} <a href="/post/id?id={{.ObjectId}}">{{.Title}}</a></span>
+                                    <p class="mb-0"><span style="font-size:12px;" class="text-secondary">{{.Timestamp}}</span></p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         {{end}}

@@ -56,6 +56,7 @@ type Reaction struct {
 
 type Notification struct {
 	Id int
+	Active bool
 	Object     string
 	Title string
 	ObjectId int // object id (to link)
@@ -470,8 +471,7 @@ func fetchDislikedPostsByUser(db *sql.DB, user_id int) []Post {
 }
 
 func updateTableLikes(db *sql.DB, table string, Likes int, id int) error { // posts or comments table
-	query := fmt.Sprintf("UPDATE %s SET likes = ? WHERE id = ?", table)
-	_, err := db.Exec(query, Likes, id)
+	_, err := db.Exec("UPDATE " + table + " SET likes = ? WHERE id = ?", Likes, id)
 	if err != nil {
 		return err
 	}
@@ -479,8 +479,7 @@ func updateTableLikes(db *sql.DB, table string, Likes int, id int) error { // po
 }
 
 func updateTableDislikes(db *sql.DB, table string, Dislikes int, id int) error {
-	query := fmt.Sprintf("UPDATE %s SET dislikes = ? WHERE id = ?", table)
-	_, err := db.Exec(query, Dislikes, id)
+	_, err := db.Exec("UPDATE " + table + " SET dislikes = ? WHERE id = ?", Dislikes, id)
 	if err != nil {
 		return err
 	}
@@ -504,6 +503,7 @@ func deleteRow(db *sql.DB, table string, id int) error {
 func createNotificationsTable(db *sql.DB) {
 	n_table := `CREATE TABLE notifications (
         id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+		"Active" BOOLEAN DEFAULT 1,
         "Object" TEXT,
 		"Title" TEXT,
 		"Object_id" INTEGER,
@@ -543,11 +543,38 @@ func fetchNotificationsByUserId(db *sql.DB, user_id int) []Notification {
 	var all []Notification
 	for record.Next() {
 		var n Notification
-		err = record.Scan(&n.Id, &n.Object, &n.Title, &n.ObjectId, &n.Action, &n.Sender, &n.Recipient, &n.Timestamp)
+		err = record.Scan(&n.Id, &n.Active, &n.Object, &n.Title, &n.ObjectId, &n.Action, &n.Sender, &n.Recipient, &n.Timestamp)
 		if err != nil {
 			log.Println(err)
 		}
 		all = append(all, n)
 	}
 	return all
+}
+
+func fetchActiveNotificationsByUserId(db *sql.DB, user_id int) []Notification {
+	record, err := db.Query("SELECT * FROM notifications WHERE Recipient=? AND active=true", user_id)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer record.Close()
+
+	var all []Notification
+	for record.Next() {
+		var n Notification
+		err = record.Scan(&n.Id, &n.Active, &n.Object, &n.Title, &n.ObjectId, &n.Action, &n.Sender, &n.Recipient, &n.Timestamp)
+		if err != nil {
+			log.Println(err)
+		}
+		all = append(all, n)
+	}
+	return all
+}
+
+func disableNotificationByID(db *sql.DB, id int) error{
+	_, err := db.Exec("UPDATE notifications SET active=false WHERE id = ?", id)
+	if err != nil {
+		return err
+	}
+	return nil
 }

@@ -93,7 +93,8 @@ func welcome(w http.ResponseWriter, r *http.Request) Data {
 	// If the session is valid, return the welcome message to the user
 	output.LoggedIn = true
 	output.User = userSession.user
-	output.Notifications = fetchNotificationsByUserId(database, output.User.Id)
+	output.Notifications = fetchActiveNotificationsByUserId(database, output.User.Id)
+	// disable(output.Notifications)
 	reverse(output.Notifications)
 	fmt.Printf("\nWelcome %s!\n", userSession.user.Username)
 	// // maybe think how to make session token change less frequently
@@ -202,4 +203,11 @@ func hashPassword(password string) (string, error) {
 func checkPasswordHash(password, hash string) bool {
     err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
     return err == nil
+}
+
+func disable(all []Notification) {
+	for _,n := range all {
+		err := disableNotificationByID(database, n.Id)
+		fmt.Println("disable err", err)
+	}
 }
