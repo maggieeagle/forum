@@ -27,17 +27,20 @@
                     id="navcol-2" style="margin-top: 10px;margin-bottom: 10px;">
                     <ul class="navbar-nav ms-auto"></ul>
                     <!-- Start: Notification Button-->
+                    {{if .Notifications}}
+                    <button class="btn btn-dark d-lg-flex align-items-lg-center" type="button"
+                    style="border-radius: 20px;box-shadow: 2px 2px 4px 2px rgb(0,0,0);margin-right: 10px;font-size: 12px;"
+                    data-bs-target="#modal-1" data-bs-toggle="modal"><img
+                        src="/static/template/assets/img/icons/notification.png">&nbsp;&nbsp;<span>&nbsp;Notifications</span><span
+                        class="fw-bold text-bg-danger rounded"
+                        style="margin-right: 0px;margin-left: 8px; padding: 0 5px;min-width: 20px; background: #f54b55;">{{len .Notifications}}</span></button>
+                    {{else}}
                     <button class="btn btn-dark d-lg-flex align-items-lg-center" type="button"
                         style="border-radius: 20px;box-shadow: 2px 2px 4px 2px rgb(0,0,0);margin-right: 10px;font-size: 12px;"
                         data-bs-target="#modal-1" data-bs-toggle="modal"><img
                             src="/static/template/assets/img/icons/notification.png"
                             style="filter: contrast(40%);">&nbsp;&nbsp;<span>&nbsp;Notifications</span></button>
-                    <button class="btn btn-dark d-lg-flex align-items-lg-center" type="button"
-                        style="border-radius: 20px;box-shadow: 2px 2px 4px 2px rgb(0,0,0);margin-right: 10px;font-size: 12px;"
-                        data-bs-target="#modal-1" data-bs-toggle="modal"><img
-                            src="/static/template/assets/img/icons/notification.png">&nbsp;&nbsp;<span>&nbsp;Notifications</span><span
-                            class="fw-bold text-bg-danger border rounded-0"
-                            style="margin-right: 5px;margin-left: 5px;">{7}</span></button>
+                    {{end}}
                     <!-- End: Notification Button-->
                     <a class="btn btn-dark d-lg-flex align-items-lg-center" role="button"
                         style="border-radius: 20px;box-shadow: 2px 2px 4px 2px rgb(0,0,0);margin-right: 10px;font-size: 12px;"
@@ -173,7 +176,7 @@
                         <div class="modal-header" style="background: #000000;">
                             <h4 class="modal-title" style="color: rgb(255,255,255);">Notifications</h4>
                             {{if .Notifications}}
-                            <form action="/disableNotifications" method="post"><button style="background:black"
+                            <form action="/disableNotifications" method="post"><button href="/disableNotifications" style="background:black"
                                 type="submit" class="btn btn-link link-light" data-bs-dismiss="modal" aria-label="Mark all as read">Mark all as read</button>
                             </form>
                             {{end}}
@@ -192,8 +195,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        {{end}}
+                            {{end}}
                         {{else}}
                         <div class="modal-body">
                             <div style="color: rgb(0,0,0);">
