@@ -39,14 +39,14 @@
                                 class="btn btn-dark d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex justify-content-start justify-content-sm-start justify-content-md-start justify-content-lg-start align-items-lg-center align-items-xl-center"
                                 role="button"
                                 style="margin-bottom: 10px;box-shadow: 2px 2px 4px 2px rgb(0,0,0);border-radius: 10px;"
-                                href="myPosts"><img
+                                href="/dashBoard?content=myposts"><img
                                     class="d-flex d-sm-flex justify-content-start justify-content-sm-start"
                                     src="static/template/assets/img/icons/email.png" style="margin-right: 3px;">&nbsp;My
                                 Posts</a><a
                                 class="btn btn-dark d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex justify-content-start justify-content-sm-start justify-content-md-start justify-content-lg-start align-items-lg-center align-items-xl-center"
                                 role="button"
                                 style="margin-bottom: 10px;box-shadow: 2px 2px 4px 2px rgb(0,0,0);border-radius: 10px;"
-                                href="likedPosts"><img
+                                href="/dashBoard?content=liked"><img
                                     class="d-flex d-sm-flex justify-content-start justify-content-sm-start"
                                     src="static/template/assets/img/icons/like.png" style="margin-right: 3px;">&nbsp;
                                 Liked
@@ -54,7 +54,7 @@
                                 class="btn btn-dark d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex justify-content-start justify-content-sm-start justify-content-md-start justify-content-lg-start align-items-lg-center align-items-xl-center"
                                 role="button"
                                 style="margin-bottom: 10px;box-shadow: 2px 2px 4px 2px rgb(0,0,0);border-radius: 10px;"
-                                href="dislikedPosts"><img
+                                href="/dashBoard?content=disliked"><img
                                     class="d-flex d-sm-flex justify-content-start justify-content-sm-start"
                                     src="static/template/assets/img/icons/dislike.png"
                                     style="margin-right: 3px;">&nbsp;
@@ -62,7 +62,7 @@
                                 class="btn btn-dark d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex justify-content-start justify-content-sm-start justify-content-md-start justify-content-lg-start align-items-lg-center align-items-xl-center"
                                 role="button"
                                 style="margin-bottom: 10px;box-shadow: 2px 2px 4px 2px rgb(0,0,0);border-radius: 10px;"
-                                href="commentedPosts"><img
+                                href="/dashBoard?content=commented"><img
                                     class="d-flex d-sm-flex justify-content-start justify-content-sm-start"
                                     src="static/template/assets/img/icons/comments.png"
                                     style="margin-right: 3px;">&nbsp;
@@ -70,7 +70,7 @@
                                 class="btn btn-dark d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex justify-content-start justify-content-sm-start justify-content-md-start justify-content-lg-start align-items-lg-center align-items-xl-center"
                                 role="button"
                                 style="margin-bottom: 10px;box-shadow: 2px 2px 4px 2px rgb(0,0,0);border-radius: 10px;"
-                                href="commentedPosts"><img
+                                href="/dashBoard?content=notifications"><img
                                     class="d-flex d-sm-flex justify-content-start justify-content-sm-start"
                                     src="static/template/assets/img/icons/notification.png"
                                     style="margin-right: 3px;">&nbsp;
@@ -79,6 +79,12 @@
                     </div>
                 </div>
             </div><!-- End: post-column -->
+            {{if .Posts}}
+                {{template "post" .}}
+            {{end}}
+            {{if .AllNotifications}}
+                {{template "notifications" .}}
+            {{end}}
         </div>
         {{else}}
         <div class="col" style="padding: 10px;">
@@ -91,4 +97,28 @@
 </div><!-- End: post-menu-container -->
 {{end}}
 {{define "script"}}
+{{end}}
+
+{{ define "notifications" }}
+<div id="notifications">
+    <!-- Start: notifications-column -->
+    {{range .AllNotifications}}
+    <div class="col"
+        style="box-shadow: 2px 2px 4px 4px;border-radius: 10px;background: rgba(244,240,240,0.7);padding: 10px;margin: 10px;">
+        <div class="row">
+            <div class="col-9 d-flex align-items-center">
+                <div class="text-start d-flex flex-row align-items-md-center align-items-xxl-center"
+                    style="margin-top: 5px;margin-right: 5px;margin-left: 5px;"><img
+                        src="static/template/assets/img/icons/user.png" style="margin-top: -4px;"></div>
+                    <span><strong>{{.Sender}}</strong> {{.Action}} your <strong>{{.Object}}</strong> {{if eq .Object "comment"}} to post {{end}} <a href="/post/id?id={{.ObjectId}}">{{.Title}}</a></span>
+            </div>
+            <div class="col-3 d-flex justify-content-end align-items-xxl-center" style="text-align: right;">
+                <div class="text-start d-flex align-items-center ml-auto" id="div-right-1"><img
+                        src="static/template/assets/img/icons/schedule.png"><span>&nbsp;{{ .Timestamp}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{end}}
+</div>
 {{end}}

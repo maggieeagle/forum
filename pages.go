@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"html/template"
 	"net/http"
 	"strconv"
@@ -27,6 +28,7 @@ type Data struct {
 	Filter string
 
 	Notifications []Notification
+	AllNotifications []Notification // all notifications for dashboard page
 }
 
 type ErrorMsg struct {
@@ -161,8 +163,30 @@ func dashBoard(w http.ResponseWriter, r *http.Request) {
 		createError(w, r, http.StatusNotFound)
 		return
 	}
-
+	setLastPage(w, r.URL.Path)
 	data := welcome(w, r)
+
+	content := r.URL.Query().Get("content")
+	switch content {
+	case "myposts": 
+		data.Posts = fillPosts(&data, fetchPostsByUser(database, data.User.Id))
+		reverse(data.Posts)
+	case "liked": 
+		data.Posts = fillPosts(&data, fetchLikedPostsByUser(database, data.User.Id))
+		reverse(data.Posts)
+	case "disliked":
+		data.Posts = fillPosts(&data, fetchDislikedPostsByUser(database, data.User.Id))
+		reverse(data.Posts)
+	case "commented":
+		data.Posts = fillPosts(&data, fetchPostsByUserComments(database, data.User.Id))
+		reverse(data.Posts)
+	case "notifications":
+		data.AllNotifications = fetchNotificationsByUserId(database, data.User.Id)
+		reverse(data.AllNotifications)
+	}
+
+	fmt.Println("data", data)
+
 	tmpl, err := template.ParseFiles("static/template/dashBoard.html", "static/template/base.html")
 	if err != nil {
 		createError(w, r, http.StatusInternalServerError)
@@ -219,6 +243,8 @@ func newPost(w http.ResponseWriter, r *http.Request) {
 		createError(w, r, http.StatusNotFound)
 		return
 	}
+	setLastPage(w, r.URL.Path)
+
 	tmpl, err := template.ParseFiles("static/template/newPost.html", "static/template/base.html")
 	if err != nil {
 		createError(w, r, http.StatusInternalServerError)
