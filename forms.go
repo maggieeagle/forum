@@ -291,7 +291,6 @@ func createComment(w http.ResponseWriter, r *http.Request) {
 	addComment(database, r.FormValue("comment"), post, data.User.Id, 0, 0)
 	addNotification(database, "post", fetchPostByID(database, post).Title, post, "commented", data.User.Username, fetchPostByID(database, post).UserId)
 
-
 	// c, err := r.Cookie("last_page")
 	// if err != nil {
 	// 	fmt.Println("cookie err", err)
@@ -311,5 +310,10 @@ func disableNotifications(w http.ResponseWriter, r *http.Request) {
 	}
 
 	disable(fetchActiveNotificationsByUserId(database, data.User.Id))
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+
+	c, err := r.Cookie("last_page")
+	if err != nil {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+	}
+	http.Redirect(w, r, c.Value, http.StatusSeeOther)
 }
