@@ -33,26 +33,6 @@ pre {
   word-wrap: break-word;
 }
 
-/* #file-input-box{
-  position: relative;
-  height: 38px;
-}
-
-#file-input {
-  position: absolute;
-  top: 0px;
-  left: 12px;
-  width: 90%;
-}
-
-#file-label {
-  position: absolute;
-  top: 7px;
-  left: 136px;
-  background: white;
-  width: 40%;
-} */
-
 .hidden {
   display: none;
 }
