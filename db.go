@@ -296,6 +296,22 @@ func fetchPostsByUserComments(db *sql.DB, id int) []Post {
 
 }
 
+func updatePostByID(db *sql.DB, id int, title, content string, subject []string) error {
+	_, err := db.Exec("UPDATE Posts SET title = ?, content = ?, subject = ? WHERE id = ?", title, content, strings.Join(subject, ", "), id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func updatePostImage(db *sql.DB, id int, image string) error {
+	_, err := db.Exec("UPDATE Posts SET image = ? WHERE id = ?", image, id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // comments
 // -------------------------------------------------------------------------------------
 

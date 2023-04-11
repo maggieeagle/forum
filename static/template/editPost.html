@@ -19,11 +19,13 @@
                         </form><!-- End: Category -->
                     </div><!-- End: categoryColumn -->
                 </div><!-- End: header div -->
-                <div id="createPost">
+                <div id="editPost">
                     <!-- Start: newpostColumn -->
                         <div class="col"
                         style="margin: 10px;box-shadow: 2px 2px 4px 4px;border-radius: 10px;background: rgba(244,240,240,0.7);padding: 10px;">
-                        <form id="newPostForm" action="/createPost" method="post" enctype="multipart/form-data">
+                        <form id="newPostForm" action="/updatePost" method="post" enctype="multipart/form-data">
+                            <input type="hidden" name="id"
+                                value="{{.Post.Id}}">
                             <!-- Start: TitleRow -->
                             <div class="row my-3">
                                 <div class="col-12 col-sm-12 col-md-4 d-flex align-items-center align-items-lg-center">
@@ -60,10 +62,15 @@
                             <!-- Start: TitleRow -->
                             <div class="row my-3">
                                 <div class="col-12 col-sm-12 col-md-4 d-flex align-items-center align-items-lg-center">
-                                    <h2>Upload:</h2>
+                                    <h2>File:</h2>
                                 </div>
-                                <div class="col-sm-12 col-md-8 d-flex align-items-center"><input class="form-control"
-                                        type="file" name="image" value="{{.Post.Image}}" accept="image/*"></div>
+                                <div class="col-sm-12 col-md-8 d-flex align-items-center row">
+                                    <div class="col-12" style="overflow: hidden;" id="file-name">{{if .Post.Image}}<img class="img-fluid" src="/static/template/assets/img/{{.Post.Image}}"
+                                        style="max-width: 90%;max-height: 150px;margin: 10px 10px;">{{end}}</div>
+                                    <div class="col-12">
+                                    <input class="form-control" type="file" name="image" id="file-input" value="{{.Post.Image}}" accept="image/*">
+                                    </div>
+                                </div>
                                 <div>
                                     {{if .Message}}
                                     <p class="text-danger">{{index .Message.Errors "Image"}}</p>
@@ -114,5 +121,13 @@
                 let form = document.getElementById("dropdown");
                 form.submit();
             }
+        </script>
+        <script>
+            fileInput = document.getElementById("file-input")
+            fileInput.addEventListener('change', () => {
+                if (fileInput.files.length > 0) {
+                    document.getElementById("file-name").classList.add("hidden")
+                }
+            });
         </script>
 {{end}}

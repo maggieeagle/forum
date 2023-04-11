@@ -40,6 +40,7 @@ func main() {
 	mux.HandleFunc("/comment", createComment)
 	mux.HandleFunc("/createPost", createPost)
 	mux.HandleFunc("/disableNotifications", disableNotifications)
+	mux.HandleFunc("/updatePost", updatePost)
 
 	// Create a custom server with a timeout
 	server := &http.Server{
