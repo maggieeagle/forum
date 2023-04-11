@@ -188,10 +188,8 @@ func dashBoard(w http.ResponseWriter, r *http.Request) {
 					data.Posts[i].Comments[j].User = fetchUserById(database, data.Posts[i].Comments[j].UserId)
 					data.Posts[i].Comments[j].UserReaction = fetchReactionByUserAndId(database, "commentsReactions", data.User.Id, data.Posts[i].Comments[j].Id).Value
 				} else {
-					fmt.Println("before", data.Posts[i].Comments)
 					data.Posts[i].Comments = deleteIndexFromSlice(data.Posts[i].Comments, j)
 					j--
-					fmt.Println("after", data.Posts[i].Comments)
 				}
 			}
 		}
@@ -365,22 +363,33 @@ func dislikedPosts(w http.ResponseWriter, r *http.Request) {
 // 	}
 // }
 
-// func editPost(w http.ResponseWriter, r *http.Request) {
-// 	if r.URL.Path != "/editPost" {
-// 		createError(w, r, http.StatusNotFound)
-// 		return
-// 	}
-// 	tmpl, err := template.ParseFiles("static/template/editPost.html")
-// 	//	tmpl, err := template.ParseFiles("static/template/index.html", "static/template/base.html")
-// 	if err != nil {
-// 		createError(w, r, http.StatusInternalServerError)
-// 		return
-// 	}
-// 	err = tmpl.Execute(w, nil)
-// 	if err != nil {
-// 		return
-// 	}
-// }
+func editPost(w http.ResponseWriter, r *http.Request) {
+	id, _ := strconv.Atoi(r.URL.Query().Get("id"))
+	posts := fetchAllPosts(database)
+	if id > 0 && id <= len(posts) {
+		data := welcome(w, r)
+		data.Post = fetchPostByID(database, id)
+		if (data.Post.UserId == data.User.Id) {
+			setLastPage(w, "/post/id?id="+strconv.Itoa(id))
+
+			tmpl, err := template.ParseFiles("static/template/editPost.html", "static/template/base.html")
+			if err != nil {
+				createError(w, r, http.StatusInternalServerError)
+				return
+			}
+			err = tmpl.Execute(w, data)
+			if err != nil {
+				return
+			}
+		} else {
+			createError(w, r, http.StatusForbidden)
+			return
+		}
+	} else {
+		createError(w, r, http.StatusBadRequest)
+		return
+	}
+}
 
 func createError(w http.ResponseWriter, r *http.Request, status int) {
 	// err := &ErrorMsg{}
@@ -388,6 +397,9 @@ func createError(w http.ResponseWriter, r *http.Request, status int) {
 	case 400:
 		errMsg.Status = 400
 		errMsg.Message = "Bad request"
+	case 403:
+		errMsg.Status = 403
+		errMsg.Message = "Forbidden"
 	case 404:
 		errMsg.Status = 404
 		errMsg.Message = "Page not found"

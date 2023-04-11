@@ -26,7 +26,7 @@ func main() {
 	mux.HandleFunc("/likedPosts", likedPosts)
 	mux.HandleFunc("/dislikedPosts", dislikedPosts)
 	// mux.HandleFunc("/editComment", editComment)
-	// mux.HandleFunc("/editPost", editPost)
+	mux.HandleFunc("/editPost", editPost)
 	mux.HandleFunc("/error", showError)
 
 	// Handle forms

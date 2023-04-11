@@ -115,7 +115,8 @@
                     <!-- Start: postEditDelete -->
                     {{if eq .Post.User.Username $.User.Username}}
                     <div class="d-flex flex-row justify-content-end justify-content-xl-end justify-content-xxl-end">
-                            <form action="/edit" method="get"><button
+                            <form action="/editPost" method="get"><input type="hidden" name="id"
+                                value="{{.Post.Id}}"><button
                                     class="btn btn-dark d-flex d-sm-flex d-md-flex justify-content-start justify-content-sm-start justify-content-md-start"
                                     data-bs-toggle="tooltip" data-bss-tooltip="" type="submit"
                                     style="box-shadow: 2px 2px 2px 2px var(--bs-btn-bg);margin-top: 5px;margin-right: 5px;margin-bottom: 5px;"
