@@ -26,8 +26,10 @@ type Data struct {
 	ScrollTo string
 	// saves current filter
 	Filter string
+	// show comments on dashboard page
+	ShowComments bool
 
-	Notifications []Notification
+	Notifications    []Notification
 	AllNotifications []Notification // all notifications for dashboard page
 }
 
@@ -71,6 +73,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 	tmpl, err := template.ParseFiles("static/template/index.html", "static/template/base.html")
 	if err != nil {
+		fmt.Println(err)
 		createError(w, r, http.StatusInternalServerError)
 		return
 	}
@@ -168,10 +171,10 @@ func dashBoard(w http.ResponseWriter, r *http.Request) {
 
 	content := r.URL.Query().Get("content")
 	switch content {
-	case "myposts": 
+	case "myposts":
 		data.Posts = fillPosts(&data, fetchPostsByUser(database, data.User.Id))
 		reverse(data.Posts)
-	case "liked": 
+	case "liked":
 		data.Posts = fillPosts(&data, fetchLikedPostsByUser(database, data.User.Id))
 		reverse(data.Posts)
 	case "disliked":
@@ -179,6 +182,20 @@ func dashBoard(w http.ResponseWriter, r *http.Request) {
 		reverse(data.Posts)
 	case "commented":
 		data.Posts = fillPosts(&data, fetchPostsByUserComments(database, data.User.Id))
+		for i := 0; i < len(data.Posts); i++ {
+			for j := 0; j < len(data.Posts[i].Comments); j++ {
+				if data.Posts[i].Comments[j].UserId == data.User.Id {
+					data.Posts[i].Comments[j].User = fetchUserById(database, data.Posts[i].Comments[j].UserId)
+					data.Posts[i].Comments[j].UserReaction = fetchReactionByUserAndId(database, "commentsReactions", data.User.Id, data.Posts[i].Comments[j].Id).Value
+				} else {
+					fmt.Println("before", data.Posts[i].Comments)
+					data.Posts[i].Comments = deleteIndexFromSlice(data.Posts[i].Comments, j)
+					j--
+					fmt.Println("after", data.Posts[i].Comments)
+				}
+			}
+		}
+		data.ShowComments = true
 		reverse(data.Posts)
 	case "notifications":
 		data.AllNotifications = fetchNotificationsByUserId(database, data.User.Id)

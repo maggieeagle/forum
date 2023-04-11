@@ -211,3 +211,9 @@ func disable(all []Notification) {
 		fmt.Println("disable err", err)
 	}
 }
+
+func deleteIndexFromSlice(s []Comment, i int) []Comment {
+	copy(s[i:], s[i+1:])
+	s[len(s)-1] = Comment{}
+	return s[:len(s)-1]
+}

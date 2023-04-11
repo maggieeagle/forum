@@ -113,7 +113,8 @@
                     </div><!-- End: comment -->
                     <!-- <div class="col"> -->
                     <!-- Start: postEditDelete -->
-                    <!-- <div class="d-flex flex-row justify-content-end justify-content-xl-end justify-content-xxl-end">
+                    {{if eq .Post.User.Username $.User.Username}}
+                    <div class="d-flex flex-row justify-content-end justify-content-xl-end justify-content-xxl-end">
                             <form action="/edit" method="get"><button
                                     class="btn btn-dark d-flex d-sm-flex d-md-flex justify-content-start justify-content-sm-start justify-content-md-start"
                                     data-bs-toggle="tooltip" data-bss-tooltip="" type="submit"
@@ -128,7 +129,8 @@
                                     style="box-shadow: 2px 2px 2px 2px var(--bs-btn-bg);margin-top: 5px;margin-right: 5px;margin-bottom: 5px;"><img
                                         src="/static/template/assets/img/icons/delete.png">&nbsp;</button>
                             </form>
-                        </div> -->
+                        </div>
+                    {{end}}
                     <!-- End: postEditDelete -->
                     <!-- </div> -->
                 </div>
@@ -196,7 +198,8 @@
                                 height="24">&nbsp;<span>{{.Dislikes}}</span></button>
                         {{end}}
                     </form>
-                    <!-- <form action="/editComment" method="get"><button
+                    {{if eq .User.Username $.User.Username}}
+                    <form action="/editComment" method="get"><button
                             class="btn btn-dark d-flex d-sm-flex d-md-flex justify-content-start justify-content-sm-start justify-content-md-start"
                             type="submit"
                             style="box-shadow: 2px 2px 2px 2px var(--bs-btn-bg);margin-top: 5px;margin-right: 5px;margin-bottom: 5px;"><img
@@ -207,7 +210,8 @@
                             data-bs-toggle="tooltip" data-bss-tooltip="" type="submit"
                             style="box-shadow: 2px 2px 2px 2px var(--bs-btn-bg);margin-top: 5px;margin-right: 5px;margin-bottom: 5px;"
                             title="Delete"><img src="/static/template/assets/img/icons/delete.png">&nbsp;</button>
-                    </form> -->
+                    </form>
+                    {{end}}
                 </div>
             </div>
         </div>
