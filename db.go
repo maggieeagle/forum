@@ -296,8 +296,8 @@ func fetchPostsByUserComments(db *sql.DB, id int) []Post {
 
 }
 
-func updatePostByID(db *sql.DB, id int, title, content string, subject []string) error {
-	_, err := db.Exec("UPDATE Posts SET title = ?, content = ?, subject = ? WHERE id = ?", title, content, strings.Join(subject, ", "), id)
+func updatePostByID(db *sql.DB, id int, title, filepath, content string, subject []string) error {
+	_, err := db.Exec("UPDATE Posts SET title = ?, image = ?, content = ?, subject = ? WHERE id = ?", title, filepath, content, strings.Join(subject, ", "), id)
 	if err != nil {
 		return err
 	}

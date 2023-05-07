@@ -365,7 +365,7 @@ func updatePost(w http.ResponseWriter, r *http.Request) {
 		io.Copy(f, file)
 	}
 	id, _ := strconv.Atoi(r.FormValue("id"))
-	err = updatePostByID(database, id, r.FormValue("title"), r.FormValue("content"), r.Form["threads"])
+	err = updatePostByID(database, id, r.FormValue("title"), fileName, r.FormValue("content"), r.Form["threads"])
 	if err != nil {
 		createError(w, r, http.StatusInternalServerError)
 		return
@@ -402,9 +402,14 @@ func updateComment(w http.ResponseWriter, r *http.Request) {
 
 func deletePost(w http.ResponseWriter, r *http.Request) {
 	data := welcome(w, r)
+	id, _ := strconv.Atoi(r.FormValue("id"))
 
 	if data.User.Id == 0 { // if not login
 		http.Redirect(w, r, "/?modal=true", http.StatusSeeOther)
+		return
+	}
+	if data.User.Id != fetchPostByID(database, id).UserId { // wrong user
+		createError(w, r, http.StatusBadRequest)
 		return
 	}
 	// data.Message = &Message{
@@ -412,7 +417,6 @@ func deletePost(w http.ResponseWriter, r *http.Request) {
 	// 	ImageHeader: header,
 	// }
 
-	id, _ := strconv.Atoi(r.FormValue("id"))
 	err := deleteRow(database, "posts", id)
 	if err != nil {
 		fmt.Println(err)
@@ -420,18 +424,23 @@ func deletePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	c, err := r.Cookie("last_page")
+	// c, err := r.Cookie("last_page")
 	// if err != nil {
-	// 	http.Redirect(w, r, "/post/id?id="+r.FormValue(""), http.StatusSeeOther)
+	 	// http.Redirect(w, r, "/post/id?id="+r.FormValue(""), http.StatusSeeOther)
 	// }
-	http.Redirect(w, r, c.Value, http.StatusSeeOther)
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
 func deleteComment(w http.ResponseWriter, r *http.Request) {
 	data := welcome(w, r)
+	id, _ := strconv.Atoi(r.FormValue("comment_id"))
 
 	if data.User.Id == 0 { // if not login
 		http.Redirect(w, r, "/?modal=true", http.StatusSeeOther)
+		return
+	}
+	if data.User.Id != fetchCommentByID(database, id).UserId { // wrong user
+		createError(w, r, http.StatusBadRequest)
 		return
 	}
 	// data.Message = &Message{
@@ -439,7 +448,6 @@ func deleteComment(w http.ResponseWriter, r *http.Request) {
 	// 	ImageHeader: header,
 	// }
 
-	id, _ := strconv.Atoi(r.FormValue("comment_id"))
 	err := deleteRow(database, "comments", id)
 	if err != nil {
 		fmt.Println(err)
