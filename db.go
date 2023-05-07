@@ -332,6 +332,25 @@ func createCommentsTable(db *sql.DB) {
 	fmt.Println("Table for comments created successfully!")
 }
 
+func fetchAllComments(db *sql.DB) []Comment {
+	record, err := db.Query("SELECT * FROM comments")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer record.Close()
+
+	var comments []Comment
+	for record.Next() {
+		var comment Comment
+		err = record.Scan(&comment.Id, &comment.Content, &comment.PostId, &comment.UserId, &comment.Likes, &comment.Dislikes, &comment.Timestamp)
+		if err != nil {
+			log.Println(err)
+		}
+		comments = append(comments, comment)
+	}
+	return comments
+}
+
 func addComment(db *sql.DB, Content string, Post_id int, User_id, Likes, Dislikes int) {
 	records := `INSERT INTO comments(Content, Post_id, User_id, Likes, Dislikes) VALUES (?, ?, ?, ?, ?)`
 	query, err := db.Prepare(records)
@@ -378,6 +397,14 @@ func fetchCommentByID(db *sql.DB, id int) Comment {
 		}
 	}
 	return comment
+}
+
+func updateCommentByID(db *sql.DB, id int, content string) error {
+	_, err := db.Exec("UPDATE Comments SET content = ? WHERE id = ?", content, id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 //	reaction tables

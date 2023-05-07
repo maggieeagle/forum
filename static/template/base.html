@@ -563,7 +563,9 @@
                         {{end}}
                     </form>
                     {{if eq .User.Username $.User.Username}}
-                    <form action="/editComment" method="get"><button
+                    <form action="/editComment" method="get">
+                        <input type="hidden"
+                        name="comment_id" value="{{.Id}}"><button
                             class="btn btn-dark d-flex d-sm-flex d-md-flex justify-content-start justify-content-sm-start justify-content-md-start"
                             type="submit"
                             style="box-shadow: 2px 2px 2px 2px var(--bs-btn-bg);margin-top: 5px;margin-right: 5px;margin-bottom: 5px;"><img

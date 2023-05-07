@@ -16,6 +16,7 @@ type Data struct {
 	// Template data (for different pages)
 	Posts []Post
 	Post  Post
+	Comment Comment
 	// All threads for search purposes
 	Threads []string
 	// Is signin modal open
@@ -345,23 +346,33 @@ func dislikedPosts(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// func editComment(w http.ResponseWriter, r *http.Request) {
-// 	if r.URL.Path != "/editComment" {
-// 		createError(w, r, http.StatusNotFound)
-// 		return
-// 	}
-// 	tmpl, err := template.ParseFiles("static/template/editComment.html")
-// 	//	tmpl, err := template.ParseFiles("static/template/index.html", "static/template/base.html")
-// 	if err != nil {
-// 		createError(w, r, http.StatusInternalServerError)
-// 		return
-// 	}
-// 	err = tmpl.Execute(w, nil)
-// 	if err != nil {
-// 		createError(w, r, http.StatusInternalServerError)
-// 		return
-// 	}
-// }
+func editComment(w http.ResponseWriter, r *http.Request) {
+	id, _ := strconv.Atoi(r.URL.Query().Get("comment_id"))
+	comments := fetchAllComments(database)
+	if id > 0 && id <= len(comments) {
+		data := welcome(w, r)
+		data.Comment = fetchCommentByID(database, id)
+		if (data.Comment.UserId == data.User.Id) {
+			setLastPage(w, "/post/id?id="+strconv.Itoa(data.Comment.PostId))
+
+			tmpl, err := template.ParseFiles("static/template/editComment.html", "static/template/base.html")
+			if err != nil {
+				createError(w, r, http.StatusInternalServerError)
+				return
+			}
+			err = tmpl.Execute(w, data)
+			if err != nil {
+				return
+			}
+		} else {
+			createError(w, r, http.StatusForbidden)
+			return
+		}
+	} else {
+		createError(w, r, http.StatusBadRequest)
+		return
+	}
+}
 
 func editPost(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.Atoi(r.URL.Query().Get("id"))

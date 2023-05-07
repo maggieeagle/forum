@@ -319,56 +319,83 @@ func disableNotifications(w http.ResponseWriter, r *http.Request) {
 }
 
 func updatePost(w http.ResponseWriter, r *http.Request) {
-		data := welcome(w, r)
-			r.ParseForm()
-			// Fetch image from form if exists
-			file, header, err := r.FormFile("image")
+	data := welcome(w, r)
+	r.ParseForm()
+	// Fetch image from form if exists
+	file, header, err := r.FormFile("image")
 
-			data.Message = &Message{
-				Threads:     r.Form["threads"],
-				ImageHeader: header,
-			}
+	data.Message = &Message{
+		Threads:     r.Form["threads"],
+		ImageHeader: header,
+	}
 
-			fileName := ""
-			if err == nil {
+	fileName := ""
+	if err == nil {
 
-				fmt.Printf("Uploaded File: %+v ", header.Filename)
-				fmt.Printf("File Size: %+v ", header.Size)
-				fmt.Println("Checking file before upload...")
+		fmt.Printf("Uploaded File: %+v ", header.Filename)
+		fmt.Printf("File Size: %+v ", header.Size)
+		fmt.Println("Checking file before upload...")
 
-				if !data.Message.ValidateImage() {
-					data.Post.Title = r.FormValue("title")
-					data.Post.Content = r.FormValue("content")
-					tmpl, err := template.ParseFiles("static/template/editPost.html", "static/template/base.html")
-					if err != nil {
-						createError(w, r, http.StatusInternalServerError)
-						return
-					}
-					err = tmpl.Execute(w, data)
-					if err != nil {
-						createError(w, r, http.StatusInternalServerError)
-						return
-					}
-					return
-
-				}
-
-				// upload the image file to static/template/assets/img/
-				// Add uuid to the file name to avoid overwriting
-				u, _ := uuid.NewV4()
-				fileName = u.String() + header.Filename
-				f, err := os.OpenFile("./static/template/assets/img/"+fileName, os.O_WRONLY|os.O_CREATE, 0666)
-				if err != nil {
-					return
-				}
-				defer f.Close()
-				io.Copy(f, file)
-			}
-			id, _ := strconv.Atoi(r.FormValue("id"))
-			err = updatePostByID(database, id, r.FormValue("title"), r.FormValue("content"), r.Form["threads"])
+		if !data.Message.ValidateImage() {
+			data.Post.Title = r.FormValue("title")
+			data.Post.Content = r.FormValue("content")
+			tmpl, err := template.ParseFiles("static/template/editPost.html", "static/template/base.html")
 			if err != nil {
 				createError(w, r, http.StatusInternalServerError)
 				return
 			}
-			http.Redirect(w, r, "/post/id?id=" + r.FormValue("id"), http.StatusSeeOther)
+			err = tmpl.Execute(w, data)
+			if err != nil {
+				createError(w, r, http.StatusInternalServerError)
+				return
+			}
+			return
+
+		}
+
+		// upload the image file to static/template/assets/img/
+		// Add uuid to the file name to avoid overwriting
+		u, _ := uuid.NewV4()
+		fileName = u.String() + header.Filename
+		f, err := os.OpenFile("./static/template/assets/img/"+fileName, os.O_WRONLY|os.O_CREATE, 0666)
+		if err != nil {
+			return
+		}
+		defer f.Close()
+		io.Copy(f, file)
+	}
+	id, _ := strconv.Atoi(r.FormValue("id"))
+	err = updatePostByID(database, id, r.FormValue("title"), r.FormValue("content"), r.Form["threads"])
+	if err != nil {
+		createError(w, r, http.StatusInternalServerError)
+		return
+	}
+	http.Redirect(w, r, "/post/id?id="+r.FormValue("id"), http.StatusSeeOther)
+}
+
+func updateComment(w http.ResponseWriter, r *http.Request) {
+	data := welcome(w, r)
+
+	if data.User.Id == 0 { // if not login
+		http.Redirect(w, r, "/?modal=true", http.StatusSeeOther)
+		return
+	}
+	// data.Message = &Message{
+	// 	Threads:     r.Form["threads"],
+	// 	ImageHeader: header,
+	// }
+
+	id, _ := strconv.Atoi(r.FormValue("comment_id"))
+	err := updateCommentByID(database, id, r.FormValue("content"))
+	if err != nil {
+		fmt.Println(err)
+		createError(w, r, http.StatusInternalServerError)
+		return
+	}
+
+	c, err := r.Cookie("last_page")
+	// if err != nil {
+	// 	http.Redirect(w, r, "/post/id?id="+r.FormValue(""), http.StatusSeeOther)
+	// }
+	http.Redirect(w, r, c.Value, http.StatusSeeOther)
 }
