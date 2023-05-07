@@ -217,3 +217,18 @@ func deleteIndexFromSlice(s []Comment, i int) []Comment {
 	s[len(s)-1] = Comment{}
 	return s[:len(s)-1]
 }
+
+func isValidCommentID(id int, comments []Comment) bool {
+	for _, comment := range comments {
+		if comment.Id == id {return true}
+	}
+	return false
+}
+
+
+func isValidPostID(id int, posts []Post) bool {
+	for _, post := range posts {
+		if post.Id == id {return true}
+	}
+	return false
+}

@@ -399,3 +399,57 @@ func updateComment(w http.ResponseWriter, r *http.Request) {
 	// }
 	http.Redirect(w, r, c.Value, http.StatusSeeOther)
 }
+
+func deletePost(w http.ResponseWriter, r *http.Request) {
+	data := welcome(w, r)
+
+	if data.User.Id == 0 { // if not login
+		http.Redirect(w, r, "/?modal=true", http.StatusSeeOther)
+		return
+	}
+	// data.Message = &Message{
+	// 	Threads:     r.Form["threads"],
+	// 	ImageHeader: header,
+	// }
+
+	id, _ := strconv.Atoi(r.FormValue("id"))
+	err := deleteRow(database, "posts", id)
+	if err != nil {
+		fmt.Println(err)
+		createError(w, r, http.StatusInternalServerError)
+		return
+	}
+
+	c, err := r.Cookie("last_page")
+	// if err != nil {
+	// 	http.Redirect(w, r, "/post/id?id="+r.FormValue(""), http.StatusSeeOther)
+	// }
+	http.Redirect(w, r, c.Value, http.StatusSeeOther)
+}
+
+func deleteComment(w http.ResponseWriter, r *http.Request) {
+	data := welcome(w, r)
+
+	if data.User.Id == 0 { // if not login
+		http.Redirect(w, r, "/?modal=true", http.StatusSeeOther)
+		return
+	}
+	// data.Message = &Message{
+	// 	Threads:     r.Form["threads"],
+	// 	ImageHeader: header,
+	// }
+
+	id, _ := strconv.Atoi(r.FormValue("comment_id"))
+	err := deleteRow(database, "comments", id)
+	if err != nil {
+		fmt.Println(err)
+		createError(w, r, http.StatusInternalServerError)
+		return
+	}
+
+	c, err := r.Cookie("last_page")
+	// if err != nil {
+	// 	http.Redirect(w, r, "/post/id?id="+r.FormValue(""), http.StatusSeeOther)
+	// }
+	http.Redirect(w, r, c.Value, http.StatusSeeOther)
+}

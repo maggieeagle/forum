@@ -89,7 +89,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 func post(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.Atoi(r.URL.Query().Get("id"))
 	posts := fetchAllPosts(database)
-	if id > 0 && id <= len(posts) {
+	if isValidPostID(id, posts) {
 		data := welcome(w, r)
 		data.Post = fetchPostByID(database, id)
 		data.Post.Comments = fetchCommentsByPost(database, id)
@@ -348,8 +348,9 @@ func dislikedPosts(w http.ResponseWriter, r *http.Request) {
 
 func editComment(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.Atoi(r.URL.Query().Get("comment_id"))
+	fmt.Println("id", id)
 	comments := fetchAllComments(database)
-	if id > 0 && id <= len(comments) {
+	if isValidCommentID(id, comments) {
 		data := welcome(w, r)
 		data.Comment = fetchCommentByID(database, id)
 		if (data.Comment.UserId == data.User.Id) {
@@ -377,7 +378,7 @@ func editComment(w http.ResponseWriter, r *http.Request) {
 func editPost(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.Atoi(r.URL.Query().Get("id"))
 	posts := fetchAllPosts(database)
-	if id > 0 && id <= len(posts) {
+	if isValidPostID(id, posts) {
 		data := welcome(w, r)
 		data.Post = fetchPostByID(database, id)
 		if (data.Post.UserId == data.User.Id) {
