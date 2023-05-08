@@ -9,6 +9,7 @@ This project consists in creating a web forum that allows :
 - liking and disliking posts and comments.
 - filtering posts.
 - create a post containing an image.
+- edit/delete users posts and comments
 
 ## Authors
 
