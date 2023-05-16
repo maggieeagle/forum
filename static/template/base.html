@@ -235,8 +235,8 @@
                                                     d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z">
                                                 </path>
                                             </svg></span><input class="form-control form-control" type="text"
-                                            name="email" required="" placeholder="Email" minlength="4" maxlength="30"
-                                            title="Min. 4, Max. 30 characters"></div>
+                                            name="email" required="" placeholder="Email" minlength="4" maxlength="50"
+                                            title="Min. 4, Max. 50 characters"></div>
                                     {{if .Message}}
                                     <p class="text-danger">{{index .Message.Errors "EmailLogin"}}</p>
                                     {{end}}
@@ -301,7 +301,7 @@
                                                 </path>
                                             </svg></span><input class="form-control form-control" type="text"
                                             name="username" required="" placeholder="Username" minlength="4"
-                                            maxlength="30" title="Min. 4, Max. 20 characters"></div>
+                                            maxlength="40" title="Min. 4, Max. 40 characters"></div>
                                     {{if .Message}}
                                     <p class="text-danger">{{index .Message.Errors "UsernameRegistration"}}</p>
                                     {{end}}
